@@ -25,6 +25,7 @@ public class GameThread extends Thread {
     RayCasting rayCasting = new RayCasting();
     UserCallback userCallback;
     Bitmap mapBitmap;
+    boolean isneed = true;
 
     boolean running = true;
 
@@ -127,6 +128,7 @@ public class GameThread extends Thread {
         sprites.add(bonus);
         for (Obst[] obsts : mapOfObst) {
             sprites.addAll(Arrays.asList(obsts));
+
         }
         while (running) {
             while (mapObstructionHeight == 0 || mapObstructionWidth == 0) {
@@ -136,7 +138,11 @@ public class GameThread extends Thread {
                     e.printStackTrace();
                 }
             }
-            mapToObst(map);
+            if (isneed) {
+                isneed = false;
+                mapToObst(map);
+            }
+
             mainHero.move(mapOfObst);
             if (mainHero.check(bonus, user.toSend[2])) {
                 int bx = random.nextInt(mapObstructionWidth * 12) + mapObstructionWidth;
@@ -194,6 +200,7 @@ public class GameThread extends Thread {
                 }
                 mainHero.points += 10;
                 map = newMap();
+                deleteObst();
                 mapToObst(map);
                 int choice = random.nextInt(4);
                 int[][] startPoints = new int[][]{
@@ -282,6 +289,7 @@ public class GameThread extends Thread {
                                 mapObstructionWidth,
                                 Bitmap.createScaledBitmap(mapBitmap, mapObstructionWidth, mapObstructionHeight, false)
                         );
+                        sprites.add(mapOfObst[i][j]);
                     }
                     else {
                         mapOfObst[i][j] = null;
@@ -289,6 +297,15 @@ public class GameThread extends Thread {
                 }
             }
         }
+        public void deleteObst() {
+            for (Obst[] obsts : mapOfObst) {
+                for (Obst obst : obsts) {
+                    sprites.remove(obst);
+                }
+
+            }
+        }
+
     }
 
 
