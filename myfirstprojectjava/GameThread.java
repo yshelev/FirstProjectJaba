@@ -138,11 +138,8 @@ public class GameThread extends Thread {
                     e.printStackTrace();
                 }
             }
-            if (isneed) {
-                isneed = false;
-                mapToObst(map);
-            }
-
+            mapToObst(map, isneed);
+            isneed = false;
             mainHero.move(mapOfObst);
             if (mainHero.check(bonus, user.toSend[2])) {
                 int bx = random.nextInt(mapObstructionWidth * 12) + mapObstructionWidth;
@@ -201,7 +198,7 @@ public class GameThread extends Thread {
                 mainHero.points += 10;
                 map = newMap();
                 deleteObst();
-                mapToObst(map);
+                mapToObst(map, true);
                 int choice = random.nextInt(4);
                 int[][] startPoints = new int[][]{
                         {mapObstructionWidth * 10, mapObstructionHeight * 10},
@@ -278,7 +275,7 @@ public class GameThread extends Thread {
     }
 
 
-    public void mapToObst(char[][] map) {
+    public void mapToObst(char[][] map, boolean isneed) {
             for (int i = 0; i < map.length; i++) {
                 for (int j = 0; j < map[i].length; j++) {
                     if (map[i][j] == '-') {
@@ -289,7 +286,7 @@ public class GameThread extends Thread {
                                 mapObstructionWidth,
                                 Bitmap.createScaledBitmap(mapBitmap, mapObstructionWidth, mapObstructionHeight, false)
                         );
-                        sprites.add(mapOfObst[i][j]);
+                        if (isneed) sprites.add(mapOfObst[i][j]);
                     }
                     else {
                         mapOfObst[i][j] = null;
